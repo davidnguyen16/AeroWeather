@@ -3,19 +3,9 @@
 import React, { useEffect, useState } from 'react'
 import { Poppins } from 'next/font/google';
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      div: any;
-      h2: any;
-    }
-  }
-}
-
 const poppins = Poppins({
     subsets: ['latin'],
     weight: ['400', '700', '800'],
-    variable: '--font-poppins',
 });
 
 const LocationTimeCard: React.FC = () => {
@@ -43,8 +33,8 @@ const LocationTimeCard: React.FC = () => {
     };
 
     return (
-        <div className={`${poppins.variable} bg-[#444444] text-white p-10 rounded-[30px] h-[300px] w-[400px] text-center shadow-[10px_15px_40px_rgba(0,0,0,0.5) ]`}>
-            <h2 className="text-[36px] font-bold mb-5 leading-tight break-words">Hanoi, Vietnam</h2>
+        <div className={`${poppins.className} bg-[#444444] text-white p-10 rounded-[30px] h-[260px] w-[400px] text-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)]`}>
+            <h2 className="text-[36px] font-bold mb-5 leading-tight break-words">Sydney, Australia</h2>
 
             <div className="text-[96px] font-extrabold leading-none tracking-tighter">
               {formatTime(currentTime)}

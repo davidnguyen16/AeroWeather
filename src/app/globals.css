@@ -18,4 +18,5 @@ body {
   min-height: 100vh;
   background: linear-gradient(135deg, #383838 0%, #9E9E9E 100%);  
   color: white;
+  font-family: 'Poppins', sans-serif;
 }

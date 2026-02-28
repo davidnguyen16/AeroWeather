@@ -1,94 +1,137 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Poppins } from 'next/font/google';
 import { FaSearch } from 'react-icons/fa';
 import { TbCurrentLocation } from "react-icons/tb";
+import { MdLocationOn } from "react-icons/md";
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['800'], // 800 là Extra Bold
+  weight: ['800'],
 });
 
+interface CityResult {
+  id: number;
+  name: string;
+  country: string;
+  admin1?: string; 
+}
+
 export default function Header() {
-  // false = Nằm trái (Dark Mode)
-  // true = Nằm phải (Light Mode)
   const [isOn, setIsOn] = useState(false);
+  const [query, setQuery] = useState(""); 
+  const [results, setResults] = useState<CityResult[]>([]); 
+  const [isFocused, setIsFocused] = useState(false);
+  const [isSearching, setIsSearching] = useState(false); 
+
+  useEffect(() => {
+    if (query.trim().length < 1) {
+      setResults([]);
+      return;
+    }
+
+    const delayDebounceFn = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=20&language=en&format=json`);
+        const data = await res.json();
+        if (data.results) {
+          setResults(data.results);
+        } else {
+          setResults([]); 
+        }
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      } finally {
+        setIsSearching(false); 
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [query]);
 
   return (
     <header className="w-full flex items-center pt-[20px] pl-[7.2%]">
       
-      {/* --- 1. CỤM SWITCH + TEXT --- */}
-      {/* group: để bao bọc cả nút và chữ */}
-      <div className="flex flex-col items-center relative">
-        
-        {/* === NÚT SWITCH === */}
+      {/* 1. SWITCH MODE */}
+      <div className="flex flex-col items-center relative z-0">
         <div 
-          onClick={() => setIsOn(!isOn)}
-          className="
-            w-[70px] h-[30px] bg-[#D9D9D9] rounded-full 
-            relative cursor-pointer transition-colors duration-300
-          "
+          onClick={() => setIsOn(!isOn)} 
+          className="w-[70px] h-[30px] bg-[#D9D9D9] rounded-full relative cursor-pointer shadow-[2px_4px_10px_rgba(0,0,0,0.3)]"
         >
-          {/* Cục tròn (Toggle) */}
-          <div 
-            className={`
-              w-[20px] h-[20px] bg-[#111111] rounded-full shadow-md
-              absolute top-[5px] transition-all duration-300
-              ${isOn ? 'left-[44px]' : 'left-[4px]'}
-            `}
-          >
-            {/* Giải thích toán học:
-               - top-[5px]: (30px chiều cao cha - 20px chiều cao con) / 2 = 5px (Căn giữa dọc chuẩn)
-               - left-[4px]: Cách trái 4px.
-               - left-[46px]: 70px (rộng) - 20px (nút) - 4px (lề) = 46px (Cách phải 4px chuẩn)
-            */}
-          </div>
+          <div className={`w-[20px] h-[20px] bg-[#111111] rounded-full shadow-[2px_2px_5px_rgba(0,0,0,0.5)] absolute top-[5px] transition-all duration-300 ${isOn ? 'left-[46px]' : 'left-[4px]'}`}></div>
         </div>
-
-        {/* === DÒNG CHỮ Ở DƯỚI === */}
-        {/* absolute top-full: Đẩy xuống đáy của div cha */}
-        {/* mt-1: Cách nút switch đúng 4px */}
-        <span className={`absolute top-full mt-1 text-[12px] ${poppins.className}`}>
+        <span className={`absolute top-full mt-1 text-[12px] text-white ${poppins.className}`}>
           {isOn ? 'Light Mode' : 'Dark Mode'}
         </span>
-      
       </div>
 
-      {/* --- 2. SEARCH BAR (CẬP NHẬT MỚI) --- */}
-      {/* - ml-[8.8%]: Giữ nguyên khoảng cách
-          - w-[53%]: (803px / 1512px) => Rộng hơn bản cũ
-          - h-[62px]: Chiều cao đúng chuẩn thiết kế
-          - rounded-[30px]: Bo tròn nhiều hơn cho hợp với độ cao 62px
-      */}
-      <div className="
-        ml-[12.9%] w-[50%] h-[40px] 
-        bg-[#444444] rounded-[30px] shadow-sm
-        flex items-center pl-[20px] pr-6 overflow-hidden
-      ">
-        {/* Icon Search */}
-        <FaSearch className="text-gray-200 text-[20px] mr-[13px]" />
-        
-        {/* Input nhập liệu */}
-        <input 
-          type="text" 
-          placeholder="Search for your preffered city..." 
-          style={{ color: 'white' }}
-          className="w-full h-full bg-transparent outline-none border-none text-[20px] placeholder-gray-400 font-medium"
-        />
+      {/* 2. SEARCH BAR + API DROPDOWN */}
+      <div className="relative ml-[12.9%] w-[50%] z-50">
+        <div className={`
+          w-full h-[40px] bg-[#444444]
+          flex items-center pl-[20px] pr-6
+          shadow-[4px_6px_15px_rgba(0,0,0,0.4)] transition-all duration-200
+          ${isFocused && query.length >= 1 ? 'rounded-t-[20px] border-b border-[#555]' : 'rounded-[30px]'}
+        `}>
+          <FaSearch className="text-gray-200 text-[20px] mr-[13px]" />
+          <input 
+            type="text" 
+            value={query}
+            autoComplete="off"
+            spellCheck="false"
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setTimeout(() => setIsFocused(false), 200)} 
+            placeholder="Search for your preffered city..." 
+            style={{ color: 'white' }} // Ép cứng màu trắng
+            className="w-full h-full bg-transparent outline-none border-none text-[20px] placeholder-gray-400 font-medium"
+          />
+        </div>
+
+        {/* DROPDOWN RESULTS */}
+        {isFocused && query.length >= 1 && (
+          <div className="absolute top-full left-0 w-full bg-[#444444] rounded-b-[20px] shadow-[4px_10px_20px_rgba(0,0,0,0.6)] max-h-[300px] overflow-y-auto flex flex-col py-2">
+            
+            {isSearching && (
+               <div className="px-5 py-4 text-gray-400 text-center text-sm italic">Searching world map...</div>
+            )}
+
+            {!isSearching && results.length > 0 && (
+              results.map((item) => (
+                <div 
+                  key={item.id}
+                  className="px-5 py-3 flex items-center gap-3 hover:bg-[#555555] cursor-pointer transition-colors text-white"
+                  onClick={() => {
+                    setQuery(`${item.name}, ${item.country}`);
+                    setIsFocused(false);
+                  }}
+                >
+                  <MdLocationOn className="text-gray-400 text-xl flex-shrink-0" />
+                  <span className="flex flex-col leading-tight">
+                    <span className="font-bold text-[16px] text-white">{item.name}</span>
+                    <span className="text-gray-400 text-[12px]">{item.admin1 ? `${item.admin1}, ` : ''}{item.country}</span>
+                  </span>
+                </div>
+              ))
+            )}
+
+            {!isSearching && results.length === 0 && (
+              <div className="px-5 py-4 text-gray-400 text-center text-sm italic">No cities found</div>
+            )}
+          </div>
+        )}
       </div>
-      {/* --- 3. CURRENT LOCATION (Giữ nguyên) --- */}
-      <button className="
-        ml-[12.8%] w-fit px-5 h-[40px] 
-        bg-[#4CBB17] hover:bg-[#3D9612] transition-colors duration-200
-        border-none outline-none cursor-pointer
-        items-center justify-center rounded-[30px] flex text-[14px] whitespace-nowrap
-     ">
+
+      {/* 3. CURRENT LOCATION BUTTON */}
+      <button className="ml-[12.8%] w-fit px-5 h-[40px] bg-[#4CBB17] hover:bg-[#3D9612] transition-colors duration-200 border-none outline-none cursor-pointer items-center justify-center rounded-[30px] flex text-[14px] whitespace-nowrap shadow-[4px_6px_15px_rgba(0,0,0,0.4)]">
         <TbCurrentLocation className="text-white text-[18px] mr-[4px]"/>
-            <span style={{ color: '#FFFFFF' }} className={`text-white ${poppins.className}`}>
-                Current Location
-            </span>
+        <span className={`text-white ${poppins.className}`}>
+            Current Location
+        </span>
       </button>
+
     </header>
   );
 }
