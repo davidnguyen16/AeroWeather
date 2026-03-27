@@ -18,7 +18,12 @@ interface CityResult {
   admin1?: string; 
 }
 
-export default function Header() {
+interface HeaderProps {
+  onCurrentLocation?: () => void;
+  onCitySelected?: (cityName: string) => void;
+}
+
+export default function Header({ onCurrentLocation, onCitySelected }: HeaderProps) {
   const [isOn, setIsOn] = useState(false);
   const [query, setQuery] = useState(""); 
   const [results, setResults] = useState<CityResult[]>([]); 
@@ -104,8 +109,10 @@ export default function Header() {
                   key={item.id}
                   className="px-5 py-3 flex items-center gap-3 hover:bg-[#555555] cursor-pointer transition-colors text-white"
                   onClick={() => {
-                    setQuery(`${item.name}, ${item.country}`);
+                    const fullCityName = item.name;
+                    setQuery(fullCityName);
                     setIsFocused(false);
+                    onCitySelected?.(fullCityName);
                   }}
                 >
                   <MdLocationOn className="text-gray-400 text-xl flex-shrink-0" />
@@ -125,7 +132,9 @@ export default function Header() {
       </div>
 
       {/* 3. CURRENT LOCATION BUTTON */}
-      <button className="ml-[12.8%] w-fit px-5 h-[40px] bg-[#4CBB17] hover:bg-[#3D9612] transition-colors duration-200 border-none outline-none cursor-pointer items-center justify-center rounded-[30px] flex text-[14px] whitespace-nowrap shadow-[4px_6px_15px_rgba(0,0,0,0.4)]">
+      <button 
+        onClick={onCurrentLocation}
+        className="ml-[12.8%] w-fit px-5 h-[40px] bg-[#4CBB17] hover:bg-[#3D9612] transition-colors duration-200 border-none outline-none cursor-pointer items-center justify-center rounded-[30px] flex text-[14px] whitespace-nowrap shadow-[4px_6px_15px_rgba(0,0,0,0.4)]">
         <TbCurrentLocation className="text-white text-[18px] mr-[4px]"/>
         <span className={`text-white ${poppins.className}`}>
             Current Location
