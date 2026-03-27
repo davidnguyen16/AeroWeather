@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Poppins } from 'next/font/google';
+import { useWeather } from '../../context/WeatherContext';
 
 const poppins = Poppins({
     subsets: ['latin'],
@@ -10,6 +11,7 @@ const poppins = Poppins({
 
 const LocationTimeCard: React.FC = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
+    const { cityName, isLoadingLocation } = useWeather();
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -32,9 +34,11 @@ const LocationTimeCard: React.FC = () => {
         return `${weekday}, ${day} ${month}`;
     };
 
+    const displayName = isLoadingLocation ? 'Detecting location...' : (cityName || 'Unknown Location');
+
     return (
         <div className={`${poppins.className} bg-[#444444] text-white p-10 rounded-[30px] h-[260px] w-[400px] text-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)]`}>
-            <h2 className="text-[36px] font-bold mb-5 leading-tight break-words">Sydney, Australia</h2>
+            <h2 className="text-[36px] font-bold mb-5 leading-tight break-words">{displayName}</h2>
 
             <div className="text-[96px] font-extrabold leading-none tracking-tighter">
               {formatTime(currentTime)}
@@ -45,6 +49,6 @@ const LocationTimeCard: React.FC = () => {
             </div>
         </div>
     );
-};  // <-- close the component here, no colon afterwardsmponent here, no colon afterwards
+};
 
 export default LocationTimeCard;

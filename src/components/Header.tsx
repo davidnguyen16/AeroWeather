@@ -5,6 +5,7 @@ import { Poppins } from 'next/font/google';
 import { FaSearch } from 'react-icons/fa';
 import { TbCurrentLocation } from "react-icons/tb";
 import { MdLocationOn } from "react-icons/md";
+import { useWeather } from '../context/WeatherContext';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -15,7 +16,9 @@ interface CityResult {
   id: number;
   name: string;
   country: string;
-  admin1?: string; 
+  admin1?: string;
+  latitude: number;
+  longitude: number;
 }
 
 export default function Header() {
@@ -23,18 +26,20 @@ export default function Header() {
   const [query, setQuery] = useState(""); 
   const [results, setResults] = useState<CityResult[]>([]); 
   const [isFocused, setIsFocused] = useState(false);
-  const [isSearching, setIsSearching] = useState(false); 
+  const [isSearching, setIsSearching] = useState(false);
+  const { setSearchedCity, clearSearch, requestCurrentLocation } = useWeather();
 
   useEffect(() => {
     if (query.trim().length < 1) {
       setResults([]);
+      clearSearch();
       return;
     }
 
     const delayDebounceFn = setTimeout(async () => {
       setIsSearching(true);
       try {
-        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=20&language=en&format=json`);
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=20&language=en&format=json`);
         const data = await res.json();
         if (data.results) {
           setResults(data.results);
@@ -43,13 +48,28 @@ export default function Header() {
         }
       } catch (error) {
         console.error("Error fetching cities:", error);
+        setResults([]);
       } finally {
         setIsSearching(false); 
       }
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [query]);
+  }, [query, clearSearch]);
+
+  const handleCitySelect = (item: CityResult) => {
+    const displayName = `${item.name}, ${item.country}`;
+    setQuery(displayName);
+    setIsFocused(false);
+    setSearchedCity(item.latitude, item.longitude, displayName);
+  };
+
+  const handleCurrentLocation = () => {
+    setQuery("");
+    setResults([]);
+    clearSearch();
+    requestCurrentLocation();
+  };
 
   return (
     <header className="w-full flex items-center pt-[20px] pl-[7.2%]">
@@ -84,8 +104,8 @@ export default function Header() {
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)} 
-            placeholder="Search for your preffered city..." 
-            style={{ color: 'white' }} // Ép cứng màu trắng
+            placeholder="Search for your preferred city..." 
+            style={{ color: 'white' }}
             className="w-full h-full bg-transparent outline-none border-none text-[20px] placeholder-gray-400 font-medium"
           />
         </div>
@@ -103,10 +123,7 @@ export default function Header() {
                 <div 
                   key={item.id}
                   className="px-5 py-3 flex items-center gap-3 hover:bg-[#555555] cursor-pointer transition-colors text-white"
-                  onClick={() => {
-                    setQuery(`${item.name}, ${item.country}`);
-                    setIsFocused(false);
-                  }}
+                  onClick={() => handleCitySelect(item)}
                 >
                   <MdLocationOn className="text-gray-400 text-xl flex-shrink-0" />
                   <span className="flex flex-col leading-tight">
@@ -125,7 +142,10 @@ export default function Header() {
       </div>
 
       {/* 3. CURRENT LOCATION BUTTON */}
-      <button className="ml-[12.8%] w-fit px-5 h-[40px] bg-[#4CBB17] hover:bg-[#3D9612] transition-colors duration-200 border-none outline-none cursor-pointer items-center justify-center rounded-[30px] flex text-[14px] whitespace-nowrap shadow-[4px_6px_15px_rgba(0,0,0,0.4)]">
+      <button
+        onClick={handleCurrentLocation}
+        className="ml-[12.8%] w-fit px-5 h-[40px] bg-[#4CBB17] hover:bg-[#3D9612] transition-colors duration-200 border-none outline-none cursor-pointer items-center justify-center rounded-[30px] flex text-[14px] whitespace-nowrap shadow-[4px_6px_15px_rgba(0,0,0,0.4)]"
+      >
         <TbCurrentLocation className="text-white text-[18px] mr-[4px]"/>
         <span className={`text-white ${poppins.className}`}>
             Current Location
