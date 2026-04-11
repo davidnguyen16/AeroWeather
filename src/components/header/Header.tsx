@@ -97,17 +97,17 @@ export default function Header({ onCurrentLocation, onCitySelected }: HeaderProp
 
         {/* DROPDOWN RESULTS */}
         {isFocused && query.length >= 1 && (
-          <div className="absolute top-full left-0 w-full bg-[#444444] rounded-b-[20px] shadow-[4px_10px_20px_rgba(0,0,0,0.6)] max-h-[300px] overflow-y-auto flex flex-col py-2">
+          <div className="absolute top-full left-0 w-full bg-[#444444] rounded-b-[20px] shadow-[4px_10px_20px_rgba(0,0,0,0.6)] max-h-[300px] overflow-y-auto flex flex-col py-1">
             
             {isSearching && (
-               <div className="px-5 py-4 text-gray-400 text-center text-sm italic">Searching world map...</div>
+               <div className="px-5 py-3 text-gray-400 text-center text-sm italic">Searching world map...</div>
             )}
 
             {!isSearching && results.length > 0 && (
               results.map((item) => (
                 <div 
                   key={item.id}
-                  className="px-5 py-3 flex items-center gap-3 hover:bg-[#555555] cursor-pointer transition-colors text-white"
+                  className="px-5 py-[10px] flex items-center gap-3 hover:bg-[#555555] cursor-pointer transition-colors text-white"
                   onClick={() => {
                     const fullCityName = item.name;
                     setQuery(fullCityName);
@@ -115,17 +115,16 @@ export default function Header({ onCurrentLocation, onCitySelected }: HeaderProp
                     onCitySelected?.(fullCityName);
                   }}
                 >
-                  <MdLocationOn className="text-gray-400 text-xl flex-shrink-0" />
-                  <span className="flex flex-col leading-tight">
-                    <span className="font-bold text-[16px] text-white">{item.name}</span>
-                    <span className="text-gray-400 text-[12px]">{item.admin1 ? `${item.admin1}, ` : ''}{item.country}</span>
+                  <FaSearch className="text-gray-400 text-[14px] flex-shrink-0 ml-[8px]" />
+                  <span className="text-[15px] font-medium text-white truncate ml-[5px]">
+                    {item.name}{item.admin1 ? `, ${item.admin1}` : ''}, {item.country}
                   </span>
                 </div>
               ))
             )}
 
             {!isSearching && results.length === 0 && (
-              <div className="px-5 py-4 text-gray-400 text-center text-sm italic">No cities found</div>
+              <div className="px-5 py-3 text-gray-400 text-center text-sm italic">No cities found</div>
             )}
           </div>
         )}
