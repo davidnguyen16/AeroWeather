@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Header from "../components/Header";
+import Header from "../components/header/Header";
 import LocationTimeCard from "../components/current_weather/LocationTimeCard";
 import WeatherWidget from "../components/current_weather/WeatherWidget";
+import ForecastCard from "../components/forecast/ForecastCard";
 
 export default function Home() {
   const [currentLocationTrigger, setCurrentLocationTrigger] = useState(0);
@@ -26,16 +27,23 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#222222]">
-      <div className="max-w-[1400px] mx-auto px-8 flex flex-col pt-8">
+      <div className="max-w-[1400px] mx-auto px-8 flex flex-col pt-8 pb-[24px]">
         <Header 
           onCurrentLocation={handleCurrentLocation}
           onCitySelected={handleCitySelected}
         />
-        <div className="flex justify-center mt-[60px] gap-[30px]">
-          <LocationTimeCard 
-            cityName={displayCity}
-            timezone={displayTimezone}
-          />
+        <div className="flex justify-center mt-[40px] gap-[30px]">
+          <div className="flex flex-col gap-[30px]">
+            <LocationTimeCard 
+              cityName={displayCity}
+              timezone={displayTimezone}
+            />
+            <ForecastCard
+              unit="metric"
+              currentLocationTrigger={currentLocationTrigger}
+              searchedCity={searchedCity}
+            />
+          </div>
           <WeatherWidget
             unit="metric"
             currentLocationTrigger={currentLocationTrigger}

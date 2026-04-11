@@ -18,6 +18,14 @@ export interface WeatherData {
     timezone: string;   // ✅ IANA timezone
 }
 
+export interface ForecastDay {
+    date: string;        // ISO date string e.g. "2026-04-12"
+    tempMax: number;
+    tempMin: number;
+    condition: string;
+    iconCode: string;
+}
+
 const WMO_MAP: Record<number, { condition: string; icon: string }> = {
     0:  { condition: 'Clear',              icon: '01d' },
     1:  { condition: 'Mostly Clear',       icon: '01d' },
@@ -156,4 +164,58 @@ export const fetchWeatherByCity = async (
         }
         throw new Error('Failed to fetch weather for the city');
     }
+};
+
+// ✅ Fetch 5-day forecast from lat/lon
+export const fetchForecastByCoords = async (
+    lat: number,
+    lon: number,
+    unit: 'metric' | 'imperial' = 'metric'
+): Promise<ForecastDay[]> => {
+    const tempUnit = unit === 'metric' ? 'celsius' : 'fahrenheit';
+
+    const res = await fetch(
+        `https://api.open-meteo.com/v1/forecast?` +
+        `latitude=${lat}&longitude=${lon}` +
+        `&daily=temperature_2m_max,temperature_2m_min,weather_code` +
+        `&temperature_unit=${tempUnit}` +
+        `&timezone=auto` +
+        `&forecast_days=6`
+    );
+
+    if (!res.ok) throw new Error('Failed to fetch forecast data');
+
+    const data = await res.json();
+    const daily = data.daily;
+
+    // Skip today (index 0), take next 5 days
+    return daily.time.slice(1, 6).map((date: string, i: number) => {
+        const idx = i + 1;
+        const wmoCode = daily.weather_code[idx] as number;
+        const mapped = WMO_MAP[wmoCode] ?? { condition: 'Unknown', icon: '01d' };
+        return {
+            date,
+            tempMax: Math.round(daily.temperature_2m_max[idx]),
+            tempMin: Math.round(daily.temperature_2m_min[idx]),
+            condition: mapped.condition,
+            iconCode: mapped.icon,
+        };
+    });
+};
+
+// ✅ Fetch 5-day forecast from city name
+export const fetchForecastByCity = async (
+    cityName: string,
+    unit: 'metric' | 'imperial' = 'metric'
+): Promise<ForecastDay[]> => {
+    const geoRes = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`
+    );
+    if (!geoRes.ok) throw new Error('Geocoding failed');
+    const geoData = await geoRes.json();
+    if (!geoData.results || geoData.results.length === 0) {
+        throw new Error(`City "${cityName}" not found`);
+    }
+    const { latitude, longitude } = geoData.results[0];
+    return fetchForecastByCoords(latitude, longitude, unit);
 };

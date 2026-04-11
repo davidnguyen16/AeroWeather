@@ -6,7 +6,7 @@
 import React from 'react'
 import { Poppins } from 'next/font/google'
 import Image from 'next/image'
-import { WeatherData } from '../current_weather/WeatherAPI'
+import { WeatherData } from '../weather_api/WeatherAPI'
 
 const poppins = Poppins({
     subsets: ['latin'],

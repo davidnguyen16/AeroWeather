@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { fetchWeatherByCoords, fetchWeatherByCity, WeatherData } from './WeatherAPI'
+import { fetchWeatherByCoords, fetchWeatherByCity, WeatherData } from '../weather_api/WeatherAPI'
 import WeatherDetailCard from './WeatherDetailCard'
 
 interface WeatherWidgetProps {
