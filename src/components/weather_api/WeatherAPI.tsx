@@ -253,30 +253,27 @@ export const fetchHourlyByCoords = async (
     const data = await res.json();
     const hourly = data.hourly;
 
-    // Find the current hour index
-    const now = new Date();
-    const nowISO = now.toISOString().slice(0, 13); // "2026-04-11T15"
-    let startIdx = hourly.time.findIndex((t: string) => t >= nowISO);
-    if (startIdx === -1) startIdx = 0;
-
-    // Pick every 3 hours, 5 slots
+    // Pick fixed time slots: 12, 15, 18, 21, 00
+    const targetHours = [12, 15, 18, 21, 0];
     const slots: HourlyForecast[] = [];
-    for (let i = startIdx; slots.length < 5 && i < hourly.time.length; i += 3) {
-        const wmoCode = hourly.weather_code[i] as number;
-        const mapped = WMO_MAP[wmoCode] ?? { condition: 'Unknown', icon: '01d' };
-        const timeStr = new Date(hourly.time[i]).toLocaleTimeString('en-GB', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-            timeZone: data.timezone || 'UTC',
+
+    for (const targetHour of targetHours) {
+        const idx = hourly.time.findIndex((t: string) => {
+            const hour = new Date(t).getHours();
+            return hour === targetHour;
         });
+        if (idx === -1) continue;
+
+        const wmoCode = hourly.weather_code[idx] as number;
+        const mapped = WMO_MAP[wmoCode] ?? { condition: 'Unknown', icon: '01d' };
+        const timeStr = targetHour.toString().padStart(2, '0') + ':00';
         slots.push({
             time: timeStr,
-            temp: Math.round(hourly.temperature_2m[i]),
+            temp: Math.round(hourly.temperature_2m[idx]),
             condition: mapped.condition,
             iconCode: mapped.icon,
-            windSpeed: Math.round(hourly.wind_speed_10m[i]),
-            windDirection: hourly.wind_direction_10m[i],
+            windSpeed: Math.round(hourly.wind_speed_10m[idx]),
+            windDirection: hourly.wind_direction_10m[idx],
             unit,
         });
     }
