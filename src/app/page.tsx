@@ -5,6 +5,7 @@ import Header from "../components/header/Header";
 import LocationTimeCard from "../components/current_weather/LocationTimeCard";
 import WeatherWidget from "../components/current_weather/WeatherWidget";
 import ForecastCard from "../components/forecast/ForecastCard";
+import HourlyForecastCard from "../components/hourly/HourlyForecastCard";
 
 export default function Home() {
   const [currentLocationTrigger, setCurrentLocationTrigger] = useState(0);
@@ -44,12 +45,19 @@ export default function Home() {
               searchedCity={searchedCity}
             />
           </div>
-          <WeatherWidget
-            unit="metric"
-            currentLocationTrigger={currentLocationTrigger}
-            searchedCity={searchedCity}
-            onWeatherUpdate={handleWeatherUpdate}
-          />
+          <div className="flex flex-col gap-[30px]">
+            <WeatherWidget
+              unit="metric"
+              currentLocationTrigger={currentLocationTrigger}
+              searchedCity={searchedCity}
+              onWeatherUpdate={handleWeatherUpdate}
+            />
+            <HourlyForecastCard
+              unit="metric"
+              currentLocationTrigger={currentLocationTrigger}
+              searchedCity={searchedCity}
+            />
+          </div>
         </div>
       </div>
     </main>

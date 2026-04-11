@@ -98,8 +98,9 @@ const WeatherDetailCard = ({
             {/* CỘT GIỮA: Icon từ OpenWeatherMap */}
             <div className="flex flex-col items-center justify-start pt-4">
                 <img
-                    src={`https://openweathermap.org/img/wn/${iconCode}@2x.png`}
+                    src={`https://openweathermap.org/img/wn/${iconCode}@4x.png`}
                     alt={condition}
+                    style={{ imageRendering: 'auto' }}
                     className="w-[180px] h-[180px]"
                 />
                 <span className={`${poppins.className} text-[24px] font-[600] tracking-wide -mt-2`}>

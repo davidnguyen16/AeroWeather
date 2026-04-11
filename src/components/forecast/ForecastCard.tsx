@@ -78,7 +78,7 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
 
     if (loading) {
         return (
-            <div className={`${poppins.className} bg-[#444444] text-white rounded-[30px] w-[340px] p-6 shadow-[10px_15px_40px_rgba(0,0,0,0.9)] flex items-center justify-center h-[300px]`}>
+            <div className={`${poppins.className} bg-[#444444] text-white rounded-[30px] w-[340px] p-6 shadow-[10px_15px_40px_rgba(0,0,0,0.9)] flex items-center justify-center`}>
                 <span className="text-gray-300 text-base animate-pulse">Loading forecast...</span>
             </div>
         );
@@ -97,8 +97,9 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
                     >
                         <div className="flex justify-center">
                             <img
-                                src={`https://openweathermap.org/img/wn/${day.iconCode}@2x.png`}
+                                src={`https://openweathermap.org/img/wn/${day.iconCode}@4x.png`}
                                 alt={day.condition}
+                                style={{ imageRendering: 'auto' }}
                                 className="w-[42px] h-[42px]"
                             />
                         </div>
