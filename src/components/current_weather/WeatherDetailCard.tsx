@@ -1,11 +1,10 @@
 'use client'
 
-// WeatherDetailCard.tsx
-// Chỉ lo 1 việc: render UI, không biết gì về API
+
 
 import React from 'react'
 import { Poppins } from 'next/font/google'
-import Image from 'next/image'
+import { Sun, Cloud, CloudRain, CloudDrizzle, CloudLightning, CloudSnow, CloudFog } from 'lucide-react';
 import { WeatherData } from '../weather_api/WeatherAPI'
 
 const poppins = Poppins({
@@ -55,7 +54,7 @@ const WeatherDetailCard = ({
             shadow-[10px_15px_40px_rgba(0,0,0,0.9)]
             flex flex-row items-stretch justify-between gap-6
         `}>
-            {/* CỘT TRÁI */}
+            
             <div className="flex flex-col justify-between items-start h-full my-[12px] ml-[10px]">
                 <div>
                     <div className="text-[65px] font-[600] leading-none tracking-tighter mb-[2px]">
@@ -65,7 +64,7 @@ const WeatherDetailCard = ({
                         Feels like: {Math.round(feelsLike)}{tempUnit}
                     </div>
 
-                    {/* Sunrise */}
+                    
                     <div className="flex items-center gap-3 ml-[30px] mb-[4px]">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[40px] h-[40px]">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -79,7 +78,7 @@ const WeatherDetailCard = ({
                         </div>
                     </div>
 
-                    {/* Sunset */}
+                    
                     <div className="flex items-center gap-3 ml-[30px]">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[40px] h-[40px]">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -95,20 +94,25 @@ const WeatherDetailCard = ({
                 </div>
             </div>
 
-            {/* CỘT GIỮA: Icon từ OpenWeatherMap */}
+            
             <div className="flex flex-col items-center justify-start pt-4">
-                <img
-                    src={`https://openweathermap.org/img/wn/${iconCode}@4x.png`}
-                    alt={condition}
-                    style={{ imageRendering: 'auto' }}
-                    className="w-[180px] h-[180px]"
-                />
+                                {(() => {
+                                    const cond = condition.toLowerCase();
+                                    let Icon = Cloud;
+                                    let color = '#a3a3a3'; // gray for clouds by default
+                                    if (cond === 'clear') { Icon = Sun; color = '#facc15'; } // yellow
+                                    else if (cond === 'clouds') { Icon = Cloud; color = '#a3a3a3'; } // gray
+                                    else if ([ 'rain', 'drizzle', 'thunderstorm' ].includes(cond)) { Icon = CloudRain; color = '#38bdf8'; } // blue
+                                    else if (cond === 'snow') { Icon = CloudSnow; color = '#e0e7ef'; } // white
+                                    else if ([ 'mist', 'fog', 'haze', 'smoke' ].includes(cond)) { Icon = CloudFog; color = '#cbd5e1'; } // light gray
+                                    return <Icon className="w-[180px] h-[180px]" color={color} strokeWidth={1.5} />;
+                                })()}
                 <span className={`${poppins.className} text-[24px] font-[600] tracking-wide -mt-2`}>
                     {getConditionLabel(condition)}
                 </span>
             </div>
 
-            {/* CỘ PHẢI: 4 thông số */}
+            
             <div className="grid grid-cols-2 gap-x-12 gap-y-4 items-center justify-items-center h-full">
                 <div className="flex flex-col items-center mr-[30px]">
                     <svg className="w-8 h-8 mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

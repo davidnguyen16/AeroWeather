@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Poppins } from 'next/font/google'
 import { HourlyForecast, fetchHourlyByCoords, fetchHourlyByCity } from '../weather_api/WeatherAPI'
+import { Sun, Cloud, CloudRain, CloudDrizzle, CloudLightning, CloudSnow, CloudFog } from 'lucide-react';
 
 const poppins = Poppins({
     subsets: ['latin'],
@@ -47,7 +48,7 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
             .finally(() => setLoading(false));
     };
 
-    // Initial load — geolocation
+    
     useEffect(() => {
         if (!navigator.geolocation) {
             setLoading(false);
@@ -59,7 +60,7 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
         );
     }, [unit]);
 
-    // Current location button
+    
     useEffect(() => {
         if (currentLocationTrigger > 0 && navigator.geolocation) {
             setLoading(true);
@@ -70,7 +71,7 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
         }
     }, [currentLocationTrigger]);
 
-    // Search city
+    
     useEffect(() => {
         if (searchedCity && searchedCity.trim().length > 0) {
             setLoading(true);
@@ -102,12 +103,12 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
             flex flex-col
             shadow-[10px_15px_40px_rgba(0,0,0,0.9)]
         `}>
-            {/* Title */}
+            
             <h3 className="text-[22px] font-bold text-center mb-1 tracking-wide">
                 Hourly Forecast:
             </h3>
 
-            {/* Hourly slots row */}
+            
             <div className="flex justify-between gap-[8px] flex-1 min-h-0">
                 {hourly.map((slot, idx) => (
                     <div
@@ -127,11 +128,17 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
                         </span>
 
                         {/* Weather icon */}
-                        <img
-                            src={`https://openweathermap.org/img/wn/${slot.iconCode}@2x.png`}
-                            alt={slot.condition}
-                            className="w-[48px] h-[48px] my-1 drop-shadow-[0_2px_6px_rgba(255,200,50,0.3)]"
-                        />
+                                                {(() => {
+                                                    const cond = slot.condition.toLowerCase();
+                                                    let Icon = Cloud;
+                                                    let color = '#a3a3a3'; // gray for clouds by default
+                                                    if (cond === 'clear') { Icon = Sun; color = '#facc15'; } // yellow
+                                                    else if (cond === 'clouds') { Icon = Cloud; color = '#a3a3a3'; } // gray
+                                                    else if ([ 'rain', 'drizzle', 'thunderstorm' ].includes(cond)) { Icon = CloudRain; color = '#38bdf8'; } // blue
+                                                    else if (cond === 'snow') { Icon = CloudSnow; color = '#e0e7ef'; } // white
+                                                    else if ([ 'mist', 'fog', 'haze', 'smoke' ].includes(cond)) { Icon = CloudFog; color = '#cbd5e1'; } // light gray
+                                                    return <Icon className="w-[48px] h-[48px] my-1 drop-shadow-[0_2px_6px_rgba(255,200,50,0.3)]" color={color} strokeWidth={1.5} />;
+                                                })()}
 
                         {/* Temperature */}
                         <span style={{ fontWeight: 700 }} className="text-[18px] text-white">

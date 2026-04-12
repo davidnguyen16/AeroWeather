@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Poppins } from 'next/font/google'
 import { ForecastDay, fetchForecastByCoords, fetchForecastByCity } from '../weather_api/WeatherAPI'
+import { Sun, Cloud, CloudRain, CloudDrizzle, CloudLightning, CloudSnow, CloudFog } from 'lucide-react';
 
 const poppins = Poppins({
     subsets: ['latin'],
@@ -96,12 +97,17 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
                         className="grid grid-cols-3 items-center"
                     >
                         <div className="flex justify-center">
-                            <img
-                                src={`https://openweathermap.org/img/wn/${day.iconCode}@4x.png`}
-                                alt={day.condition}
-                                style={{ imageRendering: 'auto' }}
-                                className="w-[42px] h-[42px]"
-                            />
+                            {(() => {
+                              const cond = day.condition.toLowerCase();
+                              let Icon = Cloud;
+                              let color = '#a3a3a3'; // gray for clouds by default
+                              if (cond === 'clear') { Icon = Sun; color = '#facc15'; } // yellow
+                              else if (cond === 'clouds') { Icon = Cloud; color = '#a3a3a3'; } // gray
+                              else if ([ 'rain', 'drizzle', 'thunderstorm' ].includes(cond)) { Icon = CloudRain; color = '#38bdf8'; } // blue
+                              else if (cond === 'snow') { Icon = CloudSnow; color = '#e0e7ef'; } // white
+                              else if ([ 'mist', 'fog', 'haze', 'smoke' ].includes(cond)) { Icon = CloudFog; color = '#cbd5e1'; } // light gray
+                              return <Icon className="w-[42px] h-[42px]" color={color} strokeWidth={1.5} />;
+                            })()}
                         </div>
                         <span style={{ marginLeft: '-35px', marginRight: '8px', fontWeight: 700 }} className="text-[17px] text-center">
                             {day.tempMax}{tempUnit}

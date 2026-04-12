@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Poppins } from 'next/font/google'
 import { ForecastDay, fetchForecastByCoords, fetchForecastByCity } from '../weather_api/WeatherAPI'
+import { Sun, Cloud, CloudRain, CloudDrizzle, CloudLightning, CloudSnow, CloudFog } from 'lucide-react';
 
 const poppins = Poppins({
     subsets: ['latin'],
@@ -30,7 +31,7 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
             .finally(() => setLoading(false));
     };
 
-    // Initial load — use geolocation
+    
     useEffect(() => {
         if (!navigator.geolocation) {
             setLoading(false);
@@ -42,7 +43,7 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
         );
     }, [unit]);
 
-    // Current location button
+    
     useEffect(() => {
         if (currentLocationTrigger > 0 && navigator.geolocation) {
             setLoading(true);
@@ -55,7 +56,7 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
         }
     }, [currentLocationTrigger]);
 
-    // Search city
+    
     useEffect(() => {
         if (searchedCity && searchedCity.trim().length > 0) {
             setLoading(true);
@@ -96,11 +97,17 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
                         className="flex items-center justify-between"
                     >
                         <div className="flex items-center gap-2 min-w-[130px]">
-                            <img
-                                src={`https://openweathermap.org/img/wn/${day.iconCode}@2x.png`}
-                                alt={day.condition}
-                                className="w-[40px] h-[40px]"
-                            />
+                                                        {(() => {
+                                                            const cond = day.condition.toLowerCase();
+                                                            let Icon = Cloud;
+                                                            let color = '#a3a3a3'; // gray for clouds by default
+                                                            if (cond === 'clear') { Icon = Sun; color = '#facc15'; } // yellow
+                                                            else if (cond === 'clouds') { Icon = Cloud; color = '#a3a3a3'; } // gray
+                                                            else if ([ 'rain', 'drizzle', 'thunderstorm' ].includes(cond)) { Icon = CloudRain; color = '#38bdf8'; } // blue
+                                                            else if (cond === 'snow') { Icon = CloudSnow; color = '#e0e7ef'; } // white
+                                                            else if ([ 'mist', 'fog', 'haze', 'smoke' ].includes(cond)) { Icon = CloudFog; color = '#cbd5e1'; } // light gray
+                                                            return <Icon className="w-[40px] h-[40px]" color={color} strokeWidth={1.5} />;
+                                                        })()}
                             <span className="text-[15px] font-semibold">
                                 {day.tempMax}/{day.tempMin}{tempUnit}
                             </span>
