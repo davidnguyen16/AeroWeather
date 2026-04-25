@@ -9,9 +9,16 @@ interface WeatherWidgetProps {
     currentLocationTrigger?: number;
     searchedCity?: string | null;
     onWeatherUpdate?: (cityName: string, timezone: string) => void;
+    isLightMode: boolean;
 }
 
-const WeatherWidget = ({ unit = 'metric', currentLocationTrigger = 0, searchedCity = null, onWeatherUpdate }: WeatherWidgetProps) => {
+const WeatherWidget = ({ 
+    unit = 'metric', 
+    currentLocationTrigger = 0, 
+    searchedCity = null, 
+    onWeatherUpdate,
+    isLightMode
+}: WeatherWidgetProps) => {
     const [weather, setWeather] = useState<WeatherData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -24,6 +31,7 @@ const WeatherWidget = ({ unit = 'metric', currentLocationTrigger = 0, searchedCi
 
         setLoading(true);
         setError(null);
+
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 try {
@@ -66,7 +74,7 @@ const WeatherWidget = ({ unit = 'metric', currentLocationTrigger = 0, searchedCi
             },
             async () => {
                 try {
-                    const data = await fetchWeatherByCoords(21.0285, 105.8542, unit); // Sydney fallback
+                    const data = await fetchWeatherByCoords(21.0285, 105.8542, unit);
                     setWeather(data);
                     onWeatherUpdate?.(data.cityName, data.timezone);
                 } catch (err: unknown) {
@@ -88,6 +96,7 @@ const WeatherWidget = ({ unit = 'metric', currentLocationTrigger = 0, searchedCi
         if (searchedCity && searchedCity.trim().length > 0) {
             setLoading(true);
             setError(null);
+
             fetchWeatherByCity(searchedCity, unit)
                 .then((data) => {
                     setWeather(data);
@@ -107,15 +116,21 @@ const WeatherWidget = ({ unit = 'metric', currentLocationTrigger = 0, searchedCi
 
     if (loading) {
         return (
-            <div className="bg-[#444444] text-white rounded-[30px] h-[260px] w-[700px] flex items-center justify-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)]">
-                <span className="text-gray-300 text-lg animate-pulse">Detecting location...</span>
+            <div className={`rounded-[30px] h-[260px] w-[700px] flex items-center justify-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)] ${
+                isLightMode ? 'bg-[#D9D9D9] text-[#292929]' : 'bg-[#444444] text-white'
+            }`}>
+                <span className={`${isLightMode ? 'text-[#292929]' : 'text-gray-300'} text-lg animate-pulse`}>
+                    Detecting location...
+                </span>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="bg-[#444444] text-white rounded-[30px] h-[260px] w-[700px] flex items-center justify-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)]">
+            <div className={`rounded-[30px] h-[260px] w-[700px] flex items-center justify-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)] ${
+                isLightMode ? 'bg-[#D9D9D9] text-[#292929]' : 'bg-[#444444] text-white'
+            }`}>
                 <span className="text-red-400 text-lg">{error}</span>
             </div>
         );
@@ -123,7 +138,7 @@ const WeatherWidget = ({ unit = 'metric', currentLocationTrigger = 0, searchedCi
 
     if (!weather) return null;
 
-    return <WeatherDetailCard {...weather} />;
+    return <WeatherDetailCard {...weather} isLightMode={isLightMode} />;
 };
 
 export default WeatherWidget;

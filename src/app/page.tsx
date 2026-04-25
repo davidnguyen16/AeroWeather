@@ -12,6 +12,7 @@ export default function Home() {
   const [searchedCity, setSearchedCity] = useState<string | null>(null);
   const [displayCity, setDisplayCity] = useState<string>('Sydney, Australia');
   const [displayTimezone, setDisplayTimezone] = useState<string>('UTC');
+  const [isLightMode, setIsLightMode] = useState(false);
 
   const handleCurrentLocation = () => {
     setCurrentLocationTrigger(prev => prev + 1);
@@ -27,22 +28,27 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#222222]">
+    <main className={`min-h-screen ${isLightMode ? 'bg-[#D9D9D9] text-[#292929]' : 'bg-[#222222] text-white'}`}>
       <div className="max-w-[1400px] mx-auto px-8 flex flex-col pt-8 pb-[24px]">
         <Header 
           onCurrentLocation={handleCurrentLocation}
           onCitySelected={handleCitySelected}
+          isLightMode={isLightMode}
+          onToggleTheme={() => setIsLightMode(prev => !prev)}
         />
+
         <div className="flex justify-center mt-[40px] gap-[30px]">
           <div className="flex flex-col gap-[30px]">
             <LocationTimeCard 
               cityName={displayCity}
               timezone={displayTimezone}
+              isLightMode={isLightMode}
             />
             <ForecastCard
               unit="metric"
               currentLocationTrigger={currentLocationTrigger}
               searchedCity={searchedCity}
+              isLightMode={isLightMode}
             />
           </div>
           <div className="flex flex-col gap-[30px]">
@@ -51,11 +57,13 @@ export default function Home() {
               currentLocationTrigger={currentLocationTrigger}
               searchedCity={searchedCity}
               onWeatherUpdate={handleWeatherUpdate}
+              isLightMode={isLightMode}
             />
             <HourlyForecastCard
               unit="metric"
               currentLocationTrigger={currentLocationTrigger}
               searchedCity={searchedCity}
+              isLightMode={isLightMode}
             />
           </div>
         </div>

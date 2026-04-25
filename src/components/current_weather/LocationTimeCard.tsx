@@ -8,9 +8,16 @@ const poppins = Poppins({
     weight: ['400', '700', '800'],
 });
 
-const LocationTimeCard: React.FC<{ cityName?: string; timezone?: string }> = ({ 
+interface LocationTimeCardProps {
+    cityName?: string;
+    timezone?: string;
+    isLightMode: boolean;
+}
+
+const LocationTimeCard: React.FC<LocationTimeCardProps> = ({ 
     cityName = 'Sydney, Australia', 
-    timezone = 'UTC' 
+    timezone = 'UTC',
+    isLightMode
 }) => {
     const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -49,7 +56,6 @@ const LocationTimeCard: React.FC<{ cityName?: string; timezone?: string }> = ({
                 day: timeObj.day || '01',
             };
         } catch {
-            // Fallback to UTC if timezone is invalid
             return {
                 hour: currentTime.getUTCHours().toString().padStart(2, '0'),
                 minute: currentTime.getUTCMinutes().toString().padStart(2, '0'),
@@ -75,7 +81,6 @@ const LocationTimeCard: React.FC<{ cityName?: string; timezone?: string }> = ({
 
     const localTime = getLocalTime();
     
-    // Determine font size based on city name length to prevent overflow
     const getFontSize = (name: string) => {
         if (name.length > 25) return "text-[22px]";
         if (name.length > 15) return "text-[28px]";
@@ -83,18 +88,27 @@ const LocationTimeCard: React.FC<{ cityName?: string; timezone?: string }> = ({
     };
 
     return (
-        <div className={`${poppins.className} bg-[#444444] text-white p-10 rounded-[30px] h-[260px] w-[400px] flex flex-col justify-center text-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)]`}>
-            <h2 className={`${getFontSize(cityName)} font-bold mb-5 leading-tight break-words`}>{cityName}</h2>
+        <div className={`${poppins.className} ${
+            isLightMode 
+                ? 'bg-[#D9D9D9] text-[#292929]' 
+                : 'bg-[#444444] text-white'
+        } p-10 rounded-[30px] h-[260px] w-[400px] flex flex-col justify-center text-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)]`}>
+            
+            <h2 className={`${getFontSize(cityName)} font-bold mb-5 leading-tight break-words`}>
+                {cityName}
+            </h2>
 
             <div className="text-[96px] font-extrabold leading-none tracking-tighter">
-              {formatTime(localTime)}
+                {formatTime(localTime)}
             </div>
 
-            <div className="text-[30px] text-gray-400 font-normal -mt-2">
-              {formatDate(localTime)}
+            <div className={`text-[30px] font-normal -mt-2 ${
+                isLightMode ? 'text-[#292929]' : 'text-gray-400'
+            }`}>
+                {formatDate(localTime)}
             </div>
         </div>
     );
-};  // <-- close the component here, no colon afterwardsmponent here, no colon afterwards
+};
 
 export default LocationTimeCard;
