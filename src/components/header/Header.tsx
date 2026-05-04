@@ -1,23 +1,19 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import { Poppins } from 'next/font/google';
 import { FaSearch } from 'react-icons/fa';
 import { TbCurrentLocation } from "react-icons/tb";
 import { MdLocationOn } from "react-icons/md";
-
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['800'],
 });
-
 interface CityResult {
   id: number;
   name: string;
   country: string;
   admin1?: string; 
 }
-
 interface HeaderProps {
   onCurrentLocation?: () => void;
   onCitySelected?: (cityName: string) => void;
@@ -36,7 +32,6 @@ export default function Header({
   const [results, setResults] = useState<CityResult[]>([]); 
   const [isFocused, setIsFocused] = useState(false);
   const [isSearching, setIsSearching] = useState(false); 
-
   useEffect(() => {
     if (query.trim().length < 1) {
       setResults([]);
@@ -64,13 +59,11 @@ export default function Header({
         setIsSearching(false); 
       }
     }, 500);
-
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
-
   return (
     <header className="w-full flex items-center pt-[20px] pl-[7.2%]">
-      
+
       {/* 1. SWITCH MODE */}
       <div className={`flex flex-col items-center relative z-0`}>
         <div 
@@ -132,7 +125,7 @@ export default function Header({
               isLightMode ? 'bg-[#D9D9D9]' : 'bg-[#444444]'
             }`}
           >
-            
+
             {isSearching && (
                <div className={`px-5 py-4 text-center text-sm italic ${
                 isLightMode ? 'text-[#292929]' : 'text-gray-400'

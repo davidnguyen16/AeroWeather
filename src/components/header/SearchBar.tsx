@@ -1,9 +1,7 @@
 'use client'
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Poppins } from 'next/font/google';
 import cities from '../../data/cities';
-
 const poppins = Poppins({
     subsets: ['latin'],
     weight: ['400', '700'],
@@ -19,7 +17,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onCitySelect, isLightMode }) => {
     const [suggestions, setSuggestions] = useState<typeof cities>([]);
     const [isOpen, setIsOpen] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
-
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
@@ -30,11 +27,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onCitySelect, isLightMode }) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setQuery(value);
-
         if (value.length > 0) {
             const filtered = cities
                 .filter(city => city.name.toLowerCase().includes(value.toLowerCase()))
@@ -47,7 +42,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onCitySelect, isLightMode }) => {
             setIsOpen(false);
         }
     };
-
     const handleSelect = (city: typeof cities[0]) => {
         setQuery('');
         setSuggestions([]);
@@ -135,5 +129,4 @@ const SearchBar: React.FC<SearchBarProps> = ({ onCitySelect, isLightMode }) => {
         </div>
     );
 };
-
 export default SearchBar;

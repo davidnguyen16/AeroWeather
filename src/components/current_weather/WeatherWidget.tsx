@@ -1,9 +1,7 @@
 'use client'
-
 import React, { useEffect, useState } from 'react'
 import { fetchWeatherByCoords, fetchWeatherByCity, WeatherData } from '../weather_api/WeatherAPI'
 import WeatherDetailCard from './WeatherDetailCard'
-
 interface WeatherWidgetProps {
     unit?: 'metric' | 'imperial';
     currentLocationTrigger?: number;
@@ -22,7 +20,6 @@ const WeatherWidget = ({
     const [weather, setWeather] = useState<WeatherData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
     const fetchCurrentLocation = () => {
         if (!navigator.geolocation) {
             setError('Geolocation is not supported by your browser');
@@ -51,14 +48,12 @@ const WeatherWidget = ({
             }
         );
     };
-
     useEffect(() => {
         if (!navigator.geolocation) {
             setError('Geolocation is not supported by your browser');
             setLoading(false);
             return;
         }
-
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 try {
@@ -85,13 +80,11 @@ const WeatherWidget = ({
             }
         );
     }, [unit]);
-
     useEffect(() => {
         if (currentLocationTrigger > 0) {
             fetchCurrentLocation();
         }
     }, [currentLocationTrigger]);
-
     useEffect(() => {
         if (searchedCity && searchedCity.trim().length > 0) {
             setLoading(true);

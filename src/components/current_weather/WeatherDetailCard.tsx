@@ -187,5 +187,4 @@ const WeatherDetailCard = ({
         </div>
     );
 };
-
 export default WeatherDetailCard;

@@ -1,8 +1,6 @@
 'use client'
-
 import React, { useEffect, useState } from 'react'
 import { Poppins } from 'next/font/google';
-
 const poppins = Poppins({
     subsets: ['latin'],
     weight: ['400', '700', '800'],
@@ -25,7 +23,6 @@ const LocationTimeCard: React.FC<LocationTimeCardProps> = ({
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
-
     const getLocalTime = () => {
         try {
             const formatter = new Intl.DateTimeFormat('en-US', {
@@ -38,7 +35,6 @@ const LocationTimeCard: React.FC<LocationTimeCardProps> = ({
                 second: '2-digit',
                 hour12: false,
             });
-
             const parts = formatter.formatToParts(currentTime);
             const timeObj: Record<string, string> = {};
             
@@ -47,7 +43,6 @@ const LocationTimeCard: React.FC<LocationTimeCardProps> = ({
                     timeObj[part.type] = part.value;
                 }
             });
-
             return {
                 hour: timeObj.hour || '00',
                 minute: timeObj.minute || '00',
@@ -65,22 +60,19 @@ const LocationTimeCard: React.FC<LocationTimeCardProps> = ({
             };
         }
     };
-
     const formatTime = (time: ReturnType<typeof getLocalTime>) => {
         return `${time.hour}:${time.minute}`;
     };
-
     const formatDate = (time: ReturnType<typeof getLocalTime>) => {
         const date = new Date(`${time.year}-${time.month}-${time.day}`);
         const weekday = date.toLocaleDateString('en-GB', { weekday: 'long' });
         const day = parseInt(time.day);
         const month = new Date(`2026-${time.month}-01`).toLocaleDateString('en-GB', { month: 'short' });
-
         return `${weekday}, ${day} ${month}`;
     };
 
     const localTime = getLocalTime();
-    
+
     const getFontSize = (name: string) => {
         if (name.length > 25) return "text-[22px]";
         if (name.length > 15) return "text-[28px]";
@@ -93,7 +85,7 @@ const LocationTimeCard: React.FC<LocationTimeCardProps> = ({
                 ? 'bg-[#D9D9D9] text-[#292929]' 
                 : 'bg-[#444444] text-white'
         } p-10 rounded-[30px] h-[260px] w-[400px] flex flex-col justify-center text-center shadow-[10px_15px_40px_rgba(0,0,0,0.9)]`}>
-            
+
             <h2 className={`${getFontSize(cityName)} font-bold mb-5 leading-tight break-words`}>
                 {cityName}
             </h2>

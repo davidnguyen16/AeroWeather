@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useEffect, useState } from 'react'
 import { Poppins } from 'next/font/google'
 import { HourlyForecast, fetchHourlyByCoords, fetchHourlyByCity } from '../weather_api/WeatherAPI'
@@ -9,7 +8,6 @@ const poppins = Poppins({
     subsets: ['latin'],
     weight: ['400', '600', '700', '800'],
 });
-
 interface HourlyForecastCardProps {
     unit?: 'metric' | 'imperial';
     currentLocationTrigger?: number;
@@ -33,7 +31,6 @@ const WindArrow = ({ direction }: { direction: number }) => (
         />
     </svg>
 );
-
 const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
     unit = 'metric',
     currentLocationTrigger = 0,
@@ -42,7 +39,6 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
 }) => {
     const [hourly, setHourly] = useState<HourlyForecast[] | null>(null);
     const [loading, setLoading] = useState(true);
-
     const fetchFromCoords = (lat: number, lon: number) => {
         fetchHourlyByCoords(lat, lon, unit)
             .then(setHourly)
@@ -81,7 +77,6 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
                 .finally(() => setLoading(false));
         }
     }, [searchedCity, unit]);
-
     const tempUnit = unit === 'metric' ? '°C' : '°F';
     const speedUnit = unit === 'metric' ? 'km/h' : 'mph';
 

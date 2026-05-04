@@ -1,7 +1,6 @@
 // WeatherAPI.tsx
 // Dùng Open-Meteo — free, không cần API key
 // Nhận lat/lon trực tiếp từ Geolocation API
-
 export interface WeatherData {
     temp: number;
     feelsLike: number;
@@ -17,7 +16,6 @@ export interface WeatherData {
     cityName: string;   // ✅ City, Country format
     timezone: string;   // ✅ IANA timezone
 }
-
 export interface ForecastDay {
     date: string;        // ISO date string e.g. "2026-04-12"
     tempMax: number;
@@ -25,7 +23,6 @@ export interface ForecastDay {
     condition: string;
     iconCode: string;
 }
-
 export interface HourlyForecast {
     time: string;           // e.g. "15:00"
     temp: number;
@@ -35,7 +32,6 @@ export interface HourlyForecast {
     windDirection: number;  // degrees
     unit: 'metric' | 'imperial';
 }
-
 const WMO_MAP: Record<number, { condition: string; icon: string }> = {
     0:  { condition: 'Clear',              icon: '01d' },
     1:  { condition: 'Mostly Clear',       icon: '01d' },
@@ -62,7 +58,6 @@ const WMO_MAP: Record<number, { condition: string; icon: string }> = {
     96: { condition: 'Thunderstorm',      icon: '11d' },
     99: { condition: 'Thunderstorm',      icon: '11d' },
 };
-
 const formatTime = (isoTime: string): string => {
     const date = new Date(isoTime);
     const hours = date.getHours();
@@ -71,7 +66,6 @@ const formatTime = (isoTime: string): string => {
     const h = hours % 12 || 12;
     return `${h.toString().padStart(2, '0')}:${minutes} ${ampm}`;
 };
-
 // ✅ Fetch thời tiết từ lat/lon (dùng với Geolocation API)
 export const fetchWeatherByCoords = async (
     lat: number,
@@ -79,7 +73,6 @@ export const fetchWeatherByCoords = async (
     unit: 'metric' | 'imperial' = 'metric'
 ): Promise<WeatherData> => {
     const tempUnit = unit === 'metric' ? 'celsius' : 'fahrenheit';
-
     // Fetch weather + reverse geocoding song song
     const [weatherRes, geoRes] = await Promise.all([
         fetch(
@@ -98,15 +91,11 @@ export const fetchWeatherByCoords = async (
             `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
         ),
     ]);
-
     if (!weatherRes.ok) throw new Error('Failed to fetch weather data');
-
     const data = await weatherRes.json();
     const geoData = await geoRes.json();
-
     // Extract timezone from API response
     const timezone = data.timezone || 'UTC';
-
     // Get city and country from reverse geocoding
     const city =
         geoData?.address?.city ||
@@ -117,12 +106,10 @@ export const fetchWeatherByCoords = async (
     
     const country = geoData?.address?.country || 'Unknown';
     const cityName = `${city}, ${country}`;
-
     const current = data.current;
     const daily = data.daily;
     const wmoCode = current.weather_code as number;
     const mapped = WMO_MAP[wmoCode] ?? { condition: 'Unknown', icon: '01d' };
-
     return {
         temp: current.temperature_2m,
         feelsLike: current.apparent_temperature,
@@ -149,16 +136,12 @@ export const fetchWeatherByCity = async (
         const geoRes = await fetch(
             `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`
         );
-
         if (!geoRes.ok) throw new Error('Geocoding failed');
-
         const geoData = await geoRes.json();
         if (!geoData.results || geoData.results.length === 0) {
             throw new Error(`City "${cityName}" not found`);
         }
-
         const { latitude, longitude, name, country } = geoData.results[0];
-
         // Step 2: Fetch weather data using the coordinates
         const weatherData = await fetchWeatherByCoords(latitude, longitude, unit);
         
@@ -175,7 +158,6 @@ export const fetchWeatherByCity = async (
         throw new Error('Failed to fetch weather for the city');
     }
 };
-
 // ✅ Fetch 5-day forecast from lat/lon
 export const fetchForecastByCoords = async (
     lat: number,
@@ -183,7 +165,6 @@ export const fetchForecastByCoords = async (
     unit: 'metric' | 'imperial' = 'metric'
 ): Promise<ForecastDay[]> => {
     const tempUnit = unit === 'metric' ? 'celsius' : 'fahrenheit';
-
     const res = await fetch(
         `https://api.open-meteo.com/v1/forecast?` +
         `latitude=${lat}&longitude=${lon}` +
@@ -192,12 +173,9 @@ export const fetchForecastByCoords = async (
         `&timezone=auto` +
         `&forecast_days=6`
     );
-
     if (!res.ok) throw new Error('Failed to fetch forecast data');
-
     const data = await res.json();
     const daily = data.daily;
-
     // Skip today (index 0), take next 5 days
     return daily.time.slice(1, 6).map((date: string, i: number) => {
         const idx = i + 1;
@@ -212,7 +190,6 @@ export const fetchForecastByCoords = async (
         };
     });
 };
-
 // ✅ Fetch 5-day forecast from city name
 export const fetchForecastByCity = async (
     cityName: string,
@@ -229,7 +206,6 @@ export const fetchForecastByCity = async (
     const { latitude, longitude } = geoData.results[0];
     return fetchForecastByCoords(latitude, longitude, unit);
 };
-
 // ✅ Fetch hourly forecast from lat/lon (next 5 time slots at 3h intervals)
 export const fetchHourlyByCoords = async (
     lat: number,
@@ -237,7 +213,6 @@ export const fetchHourlyByCoords = async (
     unit: 'metric' | 'imperial' = 'metric'
 ): Promise<HourlyForecast[]> => {
     const tempUnit = unit === 'metric' ? 'celsius' : 'fahrenheit';
-
     const res = await fetch(
         `https://api.open-meteo.com/v1/forecast?` +
         `latitude=${lat}&longitude=${lon}` +
@@ -247,9 +222,7 @@ export const fetchHourlyByCoords = async (
         `&timezone=auto` +
         `&forecast_days=2`
     );
-
     if (!res.ok) throw new Error('Failed to fetch hourly data');
-
     const data = await res.json();
     const hourly = data.hourly;
 
@@ -277,10 +250,8 @@ export const fetchHourlyByCoords = async (
             unit,
         });
     }
-
     return slots;
 };
-
 // ✅ Fetch hourly forecast from city name
 export const fetchHourlyByCity = async (
     cityName: string,

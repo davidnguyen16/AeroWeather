@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useEffect, useState } from 'react'
 import { Poppins } from 'next/font/google'
 import { ForecastDay, fetchForecastByCoords, fetchForecastByCity } from '../weather_api/WeatherAPI'
@@ -9,7 +8,6 @@ const poppins = Poppins({
     subsets: ['latin'],
     weight: ['400', '600', '700'],
 });
-
 interface ForecastCardProps {
     unit?: 'metric' | 'imperial';
     currentLocationTrigger?: number;
@@ -25,7 +23,6 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
 }) => {
     const [forecast, setForecast] = useState<ForecastDay[] | null>(null);
     const [loading, setLoading] = useState(true);
-
     const fetchFromCoords = (lat: number, lon: number) => {
         fetchForecastByCoords(lat, lon, unit)
             .then(setForecast)
@@ -64,7 +61,6 @@ const ForecastCard: React.FC<ForecastCardProps> = ({
                 .finally(() => setLoading(false));
         }
     }, [searchedCity, unit]);
-
     const formatDayDate = (dateStr: string) => {
         const date = new Date(dateStr + 'T00:00:00');
         const day = date.toLocaleDateString('en-US', { weekday: 'long' });
