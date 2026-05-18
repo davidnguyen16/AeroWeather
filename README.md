@@ -1,401 +1,274 @@
-<!-- PROJECT SHIELDS -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-<!-- PROJECT LOGO -->
-<br />
 <div align="center">
-  <a href="https://github.com/your_username/AeroWeather">
-    <img src="public/globe.svg" alt="Logo" width="80" height="80">
-  </a>
 
-  <h3 align="center">AeroWeather</h3>
+  <h1>⛅ AeroWeather</h1>
 
-  <p align="center">
-    A sleek, real-time weather application with city search, geolocation, hourly & 5-day forecasts, and dark/light mode — all powered by free APIs with zero setup required.
-    <br />
-    <a href="https://github.com/your_username/AeroWeather"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/your_username/AeroWeather">View Demo</a>
-    &middot;
-    <a href="https://github.com/your_username/AeroWeather/issues/new?labels=bug">Report Bug</a>
-    &middot;
-    <a href="https://github.com/your_username/AeroWeather/issues/new?labels=enhancement">Request Feature</a>
+  <p>A sleek real-time weather application built with Next.js 16 — no API key, no config, just clone and run.</p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+    <img src="https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
   </p>
+
+  <p>
+    <img src="https://img.shields.io/github/stars/davidnguyen16/AeroWeather?style=for-the-badge&color=FFD700" alt="Stars" />
+    <img src="https://img.shields.io/github/forks/davidnguyen16/AeroWeather?style=for-the-badge&color=94A3B8" alt="Forks" />
+    <img src="https://img.shields.io/github/issues/davidnguyen16/AeroWeather?style=for-the-badge&color=F87171" alt="Issues" />
+    <img src="https://img.shields.io/github/license/davidnguyen16/AeroWeather?style=for-the-badge&color=34D399" alt="License" />
+  </p>
+
+  <p>
+    <a href="https://github.com/davidnguyen16/AeroWeather"><strong>Explore the code »</strong></a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/davidnguyen16/AeroWeather/issues/new?labels=bug">Report a Bug</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/davidnguyen16/AeroWeather/issues/new?labels=enhancement">Request a Feature</a>
+  </p>
+
 </div>
 
 ---
 
 ## Table of Contents
 
-- [About The Project](#about-the-project)
-- [Built With](#built-with)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
 - [Project Structure](#project-structure)
+- [Data Flow](#data-flow)
 - [API Reference](#api-reference)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
-- [Acknowledgments](#acknowledgments)
 
 ---
 
-## About The Project
+## Features
 
-![AeroWeather Screenshot](public/screenshot.png)
-
-AeroWeather is a modern, full-featured weather application that gives you instant access to real-time weather data for any location in the world. Whether you want to check the current conditions outside your window or plan a trip weeks ahead, AeroWeather has you covered.
-
-**Why AeroWeather?**
-
-- **Zero API key setup** — powered entirely by free, open APIs (Open-Meteo & OpenStreetMap). Clone it and run it immediately.
-- **Real-time geolocation** — one click to detect your current location and pull weather instantly.
-- **Rich data display** — current conditions, a 5-day forecast, and fixed hourly time slots (12:00, 15:00, 18:00, 21:00, 00:00) with wind direction arrows.
-- **Live local clock** — the clock in the location card ticks in real time in the searched city's correct timezone.
-- **Dark & Light mode** — a polished toggle that themes every card and element across the entire UI.
-- **Intelligent city search** — autocomplete backed by the Open-Meteo Geocoding API, not a static list.
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+- **Zero setup** — powered entirely by [Open-Meteo](https://open-meteo.com/) and [OpenStreetMap](https://nominatim.openstreetmap.org/). No API key, no `.env` file.
+- **Geolocation** — one-click current location detection via the browser Geolocation API; falls back gracefully if denied.
+- **Live city search** — autocomplete backed by the Open-Meteo Geocoding API with real-time debounce.
+- **Current conditions** — temperature, feels-like, humidity, wind speed + direction, pressure, UV index, sunrise/sunset.
+- **5-day forecast** — daily max temperature and weather icon for the next 5 days.
+- **Hourly forecast** — fixed time slots (12:00, 15:00, 18:00, 21:00, 00:00) with animated wind arrows.
+- **Live local clock** — ticks in real time using the searched city's IANA timezone.
+- **Dark / Light mode** — smooth theme toggle applied across every card and element.
+- **WMO-accurate icons** — condition icons from the dedicated `react-icons/wi` weather set, colored per condition type.
 
 ---
 
-## Built With
+## Tech Stack
 
-| Category | Technology |
-|----------|-----------|
-| Framework | [![Next.js][Next.js]][Next-url] |
-| UI Library | [![React][React.js]][React-url] |
-| Language | [![TypeScript][TypeScript]][TypeScript-url] |
-| Styling | [![Tailwind CSS][TailwindCSS]][Tailwind-url] |
-| Icons | [![Lucide][Lucide]][Lucide-url] |
-| Weather Data | [![Open-Meteo][OpenMeteo]][OpenMeteo-url] |
-| Geocoding | [![Nominatim][Nominatim]][Nominatim-url] |
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+| Layer | Technology |
+|---|---|
+| Framework | [Next.js 16](https://nextjs.org/) (App Router) |
+| UI Library | [React 19](https://react.dev/) |
+| Language | [TypeScript 5](https://www.typescriptlang.org/) |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com/) |
+| Icons | [react-icons/wi](https://react-icons.github.io/react-icons/icons/wi/) — WMO weather icon set |
+| Weather API | [Open-Meteo](https://open-meteo.com/) — free, no auth |
+| Geocoding | [Open-Meteo Geocoding](https://open-meteo.com/en/docs/geocoding-api) |
+| Reverse Geocoding | [Nominatim (OpenStreetMap)](https://nominatim.openstreetmap.org/) |
 
 ---
 
 ## Getting Started
 
-Follow these steps to get a local copy up and running in under two minutes.
+> **No API keys required.** AeroWeather uses fully free, open APIs.
 
 ### Prerequisites
 
-You need **Node.js 18+** and **npm** installed on your machine.
-
-- Check your Node version:
-  ```sh
-  node -v
-  ```
-- Update npm to the latest version:
-  ```sh
-  npm install npm@latest -g
-  ```
+- Node.js **18+**
+- npm **9+**
 
 ### Installation
 
-> **No API keys are required.** AeroWeather uses fully free, open APIs.
+```bash
+# 1. Clone the repo
+git clone https://github.com/davidnguyen16/AeroWeather.git
+cd AeroWeather
 
-1. **Clone the repository**
-   ```sh
-   git clone https://github.com/your_username/AeroWeather.git
-   ```
+# 2. Install dependencies
+npm install
 
-2. **Navigate into the project folder**
-   ```sh
-   cd AeroWeather
-   ```
+# 3. Start the dev server
+npm run dev
+```
 
-3. **Install dependencies**
-   ```sh
-   npm install
-   ```
-
-4. **Start the development server**
-   ```sh
-   npm run dev
-   ```
-
-5. **Open the app**
-
-   Navigate to [http://localhost:3000](http://localhost:3000) in your browser. That's it — no environment variables, no configuration files.
-
-6. **(Optional) Change the git remote to your own fork**
-   ```sh
-   git remote set-url origin https://github.com/your_username/AeroWeather.git
-   git remote -v   # confirm the change
-   ```
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
-
----
-
-## Usage
-
-### Search a City
-Type any city name into the search bar in the header. A dropdown will appear with matching results powered by the Open-Meteo Geocoding API. Click a result to load its weather instantly.
-
-### Use Your Current Location
-Click the green **"Current Location"** button in the header. Your browser will ask for permission to access your location. Once granted, AeroWeather will reverse-geocode your coordinates and display the local weather.
-
-> If geolocation is denied by the browser, the app falls back to **Hanoi, Vietnam** as the default location.
-
-### Toggle Dark / Light Mode
-Click the theme toggle button in the top-right of the header to switch between dark and light mode. The entire UI — cards, backgrounds, icons — transitions instantly.
-
-### Reading the Weather Cards
-
-| Card | What it shows |
-|------|---------------|
-| **Location & Time** | City name + a live clock in the city's local timezone |
-| **Current Weather** | Temperature, feels-like, condition, humidity, wind speed, pressure, UV index, sunrise & sunset |
-| **5-Day Forecast** | Daily max temperature and weather icon for the next 5 days |
-| **Hourly Forecast** | Weather icon, temperature, wind arrow and speed at 12:00, 15:00, 18:00, 21:00, and 00:00 |
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+Open [http://localhost:3000](http://localhost:3000) — that's it.
 
 ---
 
 ## Project Structure
 
 ```
-AeroWeather/
-├── src/
-│   ├── app/
-│   │   ├── page.tsx              # Root page — state management hub
-│   │   ├── layout.tsx            # Root layout (fonts, metadata)
-│   │   └── globals.css           # Tailwind directives + global CSS
-│   │
-│   ├── components/
-│   │   ├── header/
-│   │   │   └── Header.tsx        # Search bar, theme toggle, location button
-│   │   │
-│   │   ├── current_weather/
-│   │   │   ├── WeatherWidget.tsx      # Fetches and orchestrates current weather
-│   │   │   ├── WeatherDetailCard.tsx  # Displays all current weather metrics
-│   │   │   └── LocationTimeCard.tsx   # Live clock + city name display
-│   │   │
-│   │   ├── forecast/
-│   │   │   └── ForecastCard.tsx       # 5-day forecast grid
-│   │   │
-│   │   ├── hourly/
-│   │   │   └── HourlyForecastCard.tsx # Hourly forecast with wind arrows
-│   │   │
-│   │   └── weather_api/
-│   │       └── WeatherAPI.tsx         # All API call functions + type definitions
-│   │
-│   └── data/
-│       └── cities.ts             # Static list of 87 world cities (fallback)
+src/
+├── app/
+│   ├── page.tsx              # Root page — owns all shared state
+│   ├── layout.tsx            # Root layout (fonts, metadata)
+│   └── globals.css           # Tailwind directives + global CSS
 │
-├── public/                       # Static assets (SVGs, favicon)
-├── package.json
-├── tsconfig.json                 # TypeScript config (strict mode, path aliases)
-├── next.config.ts                # Next.js config (React Compiler enabled)
-├── postcss.config.mjs            # PostCSS / Tailwind config
-└── eslint.config.mjs             # ESLint rules
+├── components/
+│   ├── header/
+│   │   └── Header.tsx        # Search bar, theme toggle, current location button
+│   │
+│   ├── weather/              # Current weather section
+│   │   ├── WeatherWidget.tsx      # Connects useWeather hook → WeatherDetailCard
+│   │   ├── WeatherDetailCard.tsx  # Renders temp, humidity, wind, UV, sunrise/sunset
+│   │   └── LocationTimeCard.tsx   # Live ticking clock in local timezone
+│   │
+│   ├── forecast/
+│   │   └── ForecastCard.tsx       # 5-day forecast (useForecast hook)
+│   │
+│   ├── hourly/
+│   │   └── HourlyForecastCard.tsx # Hourly slots with wind arrows (useHourly hook)
+│   │
+│   └── ui/
+│       └── WeatherIcon.tsx        # Centralised WMO condition → react-icons/wi mapping
+│
+├── hooks/
+│   ├── useWeatherData.ts     # Generic hook — geolocation, city search, unit handling
+│   ├── useWeather.ts         # Current weather (wraps useWeatherData)
+│   ├── useForecast.ts        # 5-day forecast (wraps useWeatherData)
+│   └── useHourly.ts          # Hourly forecast (wraps useWeatherData)
+│
+├── services/
+│   └── weatherApi.ts         # All fetch functions (Open-Meteo + Nominatim)
+│
+├── types/
+│   └── weather.ts            # Shared TypeScript interfaces (WeatherData, ForecastDay, …)
+│
+└── utils/
+    ├── weatherCodes.ts       # WMO code → { condition, icon } map
+    └── formatTime.ts         # ISO datetime → 12-hour display string
 ```
 
-### Data Flow
+---
+
+## Data Flow
 
 ```
-page.tsx  (state: isLightMode, searchedCity, displayCity, displayTimezone)
-    │
-    ├──▶ Header.tsx
-    │       ├── Search input → Open-Meteo Geocoding API → city dropdown
-    │       ├── Location button → browser Geolocation API
-    │       └── Theme toggle → isLightMode state
-    │
-    ├──▶ LocationTimeCard.tsx
-    │       └── Renders city name + live ticking clock (updates every 1s)
-    │
-    ├──▶ WeatherWidget.tsx  →  WeatherAPI.tsx  →  Open-Meteo Forecast API
-    │       └── WeatherDetailCard.tsx (renders fetched data)
-    │
-    ├──▶ ForecastCard.tsx   →  WeatherAPI.tsx  →  Open-Meteo Forecast API
-    │
-    └──▶ HourlyForecastCard.tsx  →  WeatherAPI.tsx  →  Open-Meteo Forecast API
+page.tsx  (state: searchedCity, currentLocationTrigger, displayCity, displayTimezone, isLightMode)
+│
+├── Header
+│     ├── Search input ──► Open-Meteo Geocoding API ──► results dropdown
+│     ├── "Current Location" button ──► sets currentLocationTrigger
+│     └── Theme toggle ──► isLightMode
+│
+├── weather/LocationTimeCard
+│     └── Intl.DateTimeFormat (local timezone) ──► live clock (1s interval)
+│
+├── weather/WeatherWidget
+│     └── useWeather ──► weatherApi.fetchWeather* ──► Open-Meteo Forecast + Nominatim
+│           └── WeatherDetailCard
+│
+├── forecast/ForecastCard
+│     └── useForecast ──► weatherApi.fetchForecast* ──► Open-Meteo Forecast API
+│
+└── hourly/HourlyForecastCard
+      └── useHourly ──► weatherApi.fetchHourly* ──► Open-Meteo Forecast API
 ```
 
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+Each data hook (`useWeather`, `useForecast`, `useHourly`) is a thin wrapper over the generic `useWeatherData<T>` hook, which handles three triggers in isolation: initial geolocation load, city search, and current-location refresh.
 
 ---
 
 ## API Reference
 
-AeroWeather is powered by **three fully free, no-auth APIs**:
+All three APIs are **free and require no authentication**.
 
-### 1. Open-Meteo Forecast API
-Used for current weather, 5-day forecast, and hourly data.
+### Open-Meteo Forecast API
 
 ```
 GET https://api.open-meteo.com/v1/forecast
 ```
 
-Key parameters used:
-
-| Parameter | Description |
-|-----------|-------------|
-| `latitude`, `longitude` | Target coordinates |
-| `current` | `temperature_2m`, `weather_code`, `wind_speed_10m`, `relative_humidity_2m`, `surface_pressure`, `uv_index`, `apparent_temperature`, `sunrise`, `sunset` |
-| `daily` | `weather_code`, `temperature_2m_max`, `temperature_2m_min` |
+| Parameter | Value used |
+|-----------|-----------|
+| `latitude`, `longitude` | From geolocation or geocoding |
+| `current` | `temperature_2m`, `apparent_temperature`, `relative_humidity_2m`, `wind_speed_10m`, `surface_pressure`, `weather_code`, `uv_index` |
+| `daily` | `sunrise`, `sunset`, `temperature_2m_max`, `temperature_2m_min`, `weather_code` |
 | `hourly` | `temperature_2m`, `weather_code`, `wind_speed_10m`, `wind_direction_10m` |
 | `temperature_unit` | `celsius` or `fahrenheit` |
-| `timezone` | `auto` (resolved from coordinates) |
+| `wind_speed_unit` | `kmh` or `mph` |
+| `timezone` | `auto` |
 
-### 2. Open-Meteo Geocoding API
-Used to convert a city name to coordinates.
+### Open-Meteo Geocoding API
 
 ```
-GET https://geocoding-api.open-meteo.com/v1/search?name=Tokyo&count=5&language=en&format=json
+GET https://geocoding-api.open-meteo.com/v1/search?name={city}&count=20&language=en&format=json
 ```
 
-### 3. Nominatim Reverse Geocoding (OpenStreetMap)
-Used to convert coordinates (from geolocation) back to a readable city name.
+### Nominatim Reverse Geocoding
 
 ```
 GET https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json
 ```
 
-### WMO Weather Code Mapping
+### WMO Code Mapping
 
-AeroWeather maps standard WMO weather codes to human-readable conditions and icons:
-
-| Code Range | Condition |
-|------------|-----------|
-| `0` | Clear sky |
-| `1 – 3` | Mainly clear → Overcast |
-| `45, 48` | Fog / Icy fog |
-| `51 – 57` | Drizzle (light → freezing) |
-| `61 – 67` | Rain (slight → heavy / freezing) |
-| `71 – 77` | Snow (slight → heavy / grains) |
-| `80 – 82` | Rain showers |
-| `85, 86` | Snow showers |
-| `95` | Thunderstorm |
-| `96, 99` | Thunderstorm with hail |
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+| Code(s) | Condition |
+|---------|-----------|
+| `0` | Clear |
+| `1` | Mostly Clear |
+| `2` | Partly Cloudy |
+| `3` | Overcast |
+| `45, 48` | Foggy |
+| `51 – 55` | Drizzle |
+| `61, 63` | Rain |
+| `65` | Heavy Rain |
+| `71, 73, 77` | Snow / Snow Grains |
+| `75` | Heavy Snow |
+| `80 – 82` | Rain Showers / Heavy Showers |
+| `85, 86` | Snow Showers / Heavy Snow Showers |
+| `95, 96, 99` | Thunderstorm |
 
 ---
 
 ## Roadmap
 
-- [x] Current weather display (temp, humidity, wind, UV, pressure)
+- [x] Current weather — temperature, humidity, wind, UV, pressure, sunrise/sunset
 - [x] 5-day forecast card
 - [x] Hourly forecast with wind direction arrows
-- [x] City search with autocomplete
-- [x] Geolocation support
-- [x] Dark / Light mode
+- [x] Live city search with autocomplete
+- [x] Browser geolocation support
+- [x] Dark / Light mode toggle
 - [x] Live local timezone clock
-- [ ] Celsius / Fahrenheit unit toggle in UI
-- [ ] Persistent theme preference (localStorage)
-- [ ] Air quality index display
-- [ ] Weather alerts / warnings
+- [x] WMO-accurate weather icons (react-icons/wi)
+- [ ] Celsius / Fahrenheit unit toggle in the UI
+- [ ] Persist theme preference to `localStorage`
+- [ ] Air quality index (AQI) display
+- [ ] Precipitation probability in forecast
+- [ ] Weather alerts and warnings
 - [ ] PWA support (installable on mobile)
-- [ ] Animated weather backgrounds
-- [ ] Multiple saved locations / favorites
-
-See the [open issues](https://github.com/your_username/AeroWeather/issues) for a full list of proposed features and known issues.
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+- [ ] Multiple saved locations / favourites
 
 ---
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are welcome and appreciated.
 
-If you have a suggestion that would make AeroWeather better, please fork the repo and create a pull request. You can also open an issue with the tag `enhancement`. Don't forget to give the project a star — it means a lot!
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'feat: add your feature'`
+4. Push to your fork: `git push origin feature/your-feature`
+5. Open a Pull Request
 
-1. **Fork** the repository
-2. **Create** your feature branch
-   ```sh
-   git checkout -b feature/AmazingFeature
-   ```
-3. **Commit** your changes
-   ```sh
-   git commit -m 'Add some AmazingFeature'
-   ```
-4. **Push** to the branch
-   ```sh
-   git push origin feature/AmazingFeature
-   ```
-5. **Open** a Pull Request
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+Please open an issue first if you want to discuss a significant change.
 
 ---
 
 ## License
 
-Distributed under the **MIT License**. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 ---
 
 ## Contact
 
-Your Name — [@your_twitter](https://twitter.com/your_twitter) — email@example.com
+**David Nguyen** — manhduy097142@gmail.com
 
-Project Link: [https://github.com/your_username/AeroWeather](https://github.com/your_username/AeroWeather)
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
-
----
-
-## Acknowledgments
-
-Resources and tools that made this project possible:
-
-- [Open-Meteo](https://open-meteo.com/) — Free weather API, no key required
-- [Nominatim / OpenStreetMap](https://nominatim.openstreetmap.org/) — Free reverse geocoding
-- [Lucide React](https://lucide.dev/) — Beautiful, consistent icon library
-- [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS framework
-- [Next.js](https://nextjs.org/) — The React framework for the web
-- [WMO Weather Codes](https://open-meteo.com/en/docs) — Standard weather code definitions
-- [Img Shields](https://shields.io/) — Badges for README
-- [Choose an Open Source License](https://choosealicense.com/)
-- [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-- [Best-README-Template](https://github.com/othneildrew/Best-README-Template) — Inspiration for this README
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
-
----
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/your_username/AeroWeather.svg?style=for-the-badge
-[contributors-url]: https://github.com/your_username/AeroWeather/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/your_username/AeroWeather.svg?style=for-the-badge
-[forks-url]: https://github.com/your_username/AeroWeather/network/members
-[stars-shield]: https://img.shields.io/github/stars/your_username/AeroWeather.svg?style=for-the-badge
-[stars-url]: https://github.com/your_username/AeroWeather/stargazers
-[issues-shield]: https://img.shields.io/github/issues/your_username/AeroWeather.svg?style=for-the-badge
-[issues-url]: https://github.com/your_username/AeroWeather/issues
-[license-shield]: https://img.shields.io/github/license/your_username/AeroWeather.svg?style=for-the-badge
-[license-url]: https://github.com/your_username/AeroWeather/blob/main/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/your_linkedin
-
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[TypeScript]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
-[TypeScript-url]: https://www.typescriptlang.org/
-[TailwindCSS]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
-[Tailwind-url]: https://tailwindcss.com/
-[Lucide]: https://img.shields.io/badge/Lucide-F56565?style=for-the-badge&logo=lucide&logoColor=white
-[Lucide-url]: https://lucide.dev/
-[OpenMeteo]: https://img.shields.io/badge/Open--Meteo-00BFFF?style=for-the-badge&logo=cloud&logoColor=white
-[OpenMeteo-url]: https://open-meteo.com/
-[Nominatim]: https://img.shields.io/badge/Nominatim-7EBC6F?style=for-the-badge&logo=openstreetmap&logoColor=white
-[Nominatim-url]: https://nominatim.openstreetmap.org/
+Project: [github.com/davidnguyen16/AeroWeather](https://github.com/davidnguyen16/AeroWeather)

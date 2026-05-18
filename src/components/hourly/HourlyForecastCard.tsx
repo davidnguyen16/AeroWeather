@@ -1,15 +1,18 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import { Poppins } from 'next/font/google'
-import { HourlyForecast, fetchHourlyByCoords, fetchHourlyByCity } from '../weather_api/WeatherAPI'
-import { Sun, Cloud, CloudRain, CloudSnow, CloudFog } from 'lucide-react';
+'use client';
+
+import React from 'react';
+import { Poppins } from 'next/font/google';
+import WeatherIcon from '@/components/ui/WeatherIcon';
+import { useHourly } from '@/hooks/useHourly';
+import type { Unit } from '@/types/weather';
 
 const poppins = Poppins({
     subsets: ['latin'],
     weight: ['400', '600', '700', '800'],
 });
+
 interface HourlyForecastCardProps {
-    unit?: 'metric' | 'imperial';
+    unit?: Unit;
     currentLocationTrigger?: number;
     searchedCity?: string | null;
     isLightMode?: boolean;
@@ -31,79 +34,39 @@ const WindArrow = ({ direction }: { direction: number }) => (
         />
     </svg>
 );
+
+const getLightCardColor = (time: string) => {
+    if (time === '21:00' || time === '00:00') return 'bg-[#6E5A9E]';
+    return 'bg-[#F88508]';
+};
+
+const getLightCardTextColor = (time: string) => {
+    if (time === '21:00' || time === '00:00') return 'text-white';
+    return 'text-[#292929]';
+};
+
 const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
     unit = 'metric',
     currentLocationTrigger = 0,
     searchedCity = null,
     isLightMode = false,
 }) => {
-    const [hourly, setHourly] = useState<HourlyForecast[] | null>(null);
-    const [loading, setLoading] = useState(true);
-    const fetchFromCoords = (lat: number, lon: number) => {
-        fetchHourlyByCoords(lat, lon, unit)
-            .then(setHourly)
-            .catch(() => setHourly(null))
-            .finally(() => setLoading(false));
-    };
+    const { data: hourly, loading } = useHourly({ unit, currentLocationTrigger, searchedCity });
 
-    useEffect(() => {
-        if (!navigator.geolocation) {
-            setLoading(false);
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            (pos) => fetchFromCoords(pos.coords.latitude, pos.coords.longitude),
-            () => fetchFromCoords(21.0285, 105.8542)
-        );
-    }, [unit]);
-
-    useEffect(() => {
-        if (currentLocationTrigger > 0 && navigator.geolocation) {
-            setLoading(true);
-            navigator.geolocation.getCurrentPosition(
-                (pos) => fetchFromCoords(pos.coords.latitude, pos.coords.longitude),
-                () => setLoading(false)
-            );
-        }
-    }, [currentLocationTrigger]);
-
-    useEffect(() => {
-        if (searchedCity && searchedCity.trim().length > 0) {
-            setLoading(true);
-            fetchHourlyByCity(searchedCity, unit)
-                .then(setHourly)
-                .catch(() => setHourly(null))
-                .finally(() => setLoading(false));
-        }
-    }, [searchedCity, unit]);
     const tempUnit = unit === 'metric' ? '°C' : '°F';
     const speedUnit = unit === 'metric' ? 'km/h' : 'mph';
 
-    const getLightCardColor = (time: string) => {
-        if (time === '12:00' || time === '15:00' || time === '18:00') {
-            return 'bg-[#F88508]';
-        }
-
-        if (time === '21:00' || time === '00:00') {
-            return 'bg-[#6E5A9E]';
-        }
-
-        return 'bg-[#F88508]';
-    };
-
-    const getLightCardTextColor = (time: string) => {
-        if (time === '21:00' || time === '00:00') {
-            return 'text-white';
-        }
-
-        return 'text-[#292929]';
+    const containerStyle = {
+        width: '730px',
+        marginLeft: '-30px',
+        minWidth: '730px',
+        height: '323px',
     };
 
     if (loading) {
         return (
             <div
-                style={{ width: '730px', marginLeft: '-30px', minWidth: '730px', height: '323px' }}
+                style={containerStyle}
                 className={`${poppins.className} ${
                     isLightMode ? 'bg-white text-[#292929]' : 'bg-[#444444] text-white'
                 } rounded-[30px] p-6 shadow-[10px_15px_40px_rgba(0,0,0,0.9)] flex items-center justify-center`}
@@ -119,12 +82,11 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
 
     return (
         <div
-            style={{ width: '730px', marginLeft: '-30px', minWidth: '730px', height: '323px', padding: '2px 30px 8px 30px' }}
+            style={{ ...containerStyle, padding: '2px 30px 8px 30px' }}
             className={`
                 ${poppins.className}
                 ${isLightMode ? 'bg-white text-[#292929]' : 'bg-[#444444] text-white'}
-                rounded-[30px]
-                flex flex-col
+                rounded-[30px] flex flex-col
                 shadow-[10px_15px_40px_rgba(0,0,0,0.9)]
             `}
         >
@@ -155,49 +117,20 @@ const HourlyForecastCard: React.FC<HourlyForecastCardProps> = ({
                                 hover:scale-[1.03]
                             `}
                         >
-                            <span style={{ fontWeight: 700 }} className={`text-[20px] ${smallCardText} tracking-wider`}>
+                            <span className={`text-[20px] font-bold ${smallCardText} tracking-wider`}>
                                 {slot.time}
                             </span>
 
-                            {(() => {
-                                const cond = slot.condition.toLowerCase();
-                                let Icon = Cloud;
-                                let color = '#a3a3a3';
+                            <WeatherIcon condition={slot.condition} size={52} />
 
-                                if (cond === 'clear') {
-                                    Icon = Sun;
-                                    color = '#facc15';
-                                } else if (cond === 'clouds') {
-                                    Icon = Cloud;
-                                    color = '#a3a3a3';
-                                } else if (['rain', 'drizzle', 'thunderstorm'].includes(cond)) {
-                                    Icon = CloudRain;
-                                    color = '#38bdf8';
-                                } else if (cond === 'snow') {
-                                    Icon = CloudSnow;
-                                    color = '#e0e7ef';
-                                } else if (['mist', 'fog', 'haze', 'smoke'].includes(cond)) {
-                                    Icon = CloudFog;
-                                    color = '#cbd5e1';
-                                }
-
-                                return (
-                                    <Icon
-                                        className="w-[48px] h-[48px] my-1 drop-shadow-[0_2px_6px_rgba(255,200,50,0.3)]"
-                                        color={color}
-                                        strokeWidth={1.5}
-                                    />
-                                );
-                            })()}
-
-                            <span style={{ fontWeight: 700 }} className={`text-[18px] ${smallCardText}`}>
+                            <span className={`text-[18px] font-bold ${smallCardText}`}>
                                 {slot.temp}{tempUnit}
                             </span>
 
                             <div className="flex flex-col items-center mt-2 gap-1">
                                 <WindArrow direction={slot.windDirection} />
-                                <span style={{ fontWeight: 700 }} className="text-[13px] text-blue-300">
-                                    {slot.windSpeed}{speedUnit}
+                                <span className="text-[13px] font-bold text-blue-300">
+                                    {slot.windSpeed} {speedUnit}
                                 </span>
                             </div>
                         </div>

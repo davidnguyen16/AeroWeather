@@ -1,10 +1,12 @@
 "use client";
+
 import { useState } from "react";
 import Header from "../components/header/Header";
-import LocationTimeCard from "../components/current_weather/LocationTimeCard";
-import WeatherWidget from "../components/current_weather/WeatherWidget";
+import LocationTimeCard from "../components/weather/LocationTimeCard";
+import WeatherWidget from "../components/weather/WeatherWidget";
 import ForecastCard from "../components/forecast/ForecastCard";
 import HourlyForecastCard from "../components/hourly/HourlyForecastCard";
+
 export default function Home() {
   const [currentLocationTrigger, setCurrentLocationTrigger] = useState(0);
   const [searchedCity, setSearchedCity] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export default function Home() {
   return (
     <main className={`min-h-screen ${isLightMode ? 'bg-[#D9D9D9] text-[#292929]' : 'bg-[#222222] text-white'}`}>
       <div className="max-w-[1400px] mx-auto px-8 flex flex-col pt-8 pb-[24px]">
-        <Header 
+        <Header
           onCurrentLocation={handleCurrentLocation}
           onCitySelected={handleCitySelected}
           isLightMode={isLightMode}
@@ -35,7 +37,7 @@ export default function Home() {
 
         <div className="flex justify-center mt-[40px] gap-[30px]">
           <div className="flex flex-col gap-[30px]">
-            <LocationTimeCard 
+            <LocationTimeCard
               cityName={displayCity}
               timezone={displayTimezone}
               isLightMode={isLightMode}
