@@ -40,8 +40,6 @@
 - [API Reference](#api-reference)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ---
 
