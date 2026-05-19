@@ -12,13 +12,6 @@
   </p>
 
   <p>
-    <img src="https://img.shields.io/github/stars/davidnguyen16/AeroWeather?style=for-the-badge&color=FFD700" alt="Stars" />
-    <img src="https://img.shields.io/github/forks/davidnguyen16/AeroWeather?style=for-the-badge&color=94A3B8" alt="Forks" />
-    <img src="https://img.shields.io/github/issues/davidnguyen16/AeroWeather?style=for-the-badge&color=F87171" alt="Issues" />
-    <img src="https://img.shields.io/github/license/davidnguyen16/AeroWeather?style=for-the-badge&color=34D399" alt="License" />
-  </p>
-
-  <p>
     <a href="https://github.com/davidnguyen16/AeroWeather"><strong>Explore the code »</strong></a>
     &nbsp;·&nbsp;
     <a href="https://github.com/davidnguyen16/AeroWeather/issues/new?labels=bug">Report a Bug</a>
