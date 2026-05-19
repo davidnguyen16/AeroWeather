@@ -23,7 +23,7 @@
 
 ---
 
-## Table of Contents
+## 1. Table of Contents
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -34,7 +34,7 @@
   
 ---
 
-## Features
+## 2. Features
 
 - **Zero setup** — powered entirely by [Open-Meteo](https://open-meteo.com/) and [OpenStreetMap](https://nominatim.openstreetmap.org/). No API key, no `.env` file.
 - **Geolocation** — one-click current location detection via the browser Geolocation API; falls back gracefully if denied.
@@ -48,7 +48,7 @@
 
 ---
 
-## Tech Stack
+## 3. Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -63,7 +63,7 @@
 
 ---
 
-## Getting Started
+## 4. Getting Started
 
 > **No API keys required.** AeroWeather uses fully free, open APIs.
 
@@ -90,7 +90,7 @@ Open your browser: Head over to http://localhost:3000 to see it in action.
 
 ---
 
-## Project Structure
+## 5. Project Structure
 
 ```
 src/
@@ -136,7 +136,7 @@ src/
 
 ---
 
-## Data Flow
+## 6. Data Flow
 
 ```
 page.tsx  (state: searchedCity, currentLocationTrigger, displayCity, displayTimezone, isLightMode)
@@ -164,7 +164,7 @@ Each data hook (`useWeather`, `useForecast`, `useHourly`) is a thin wrapper over
 
 ---
 
-## API Reference
+## 7. API Reference
 
 All three APIs are **free and require no authentication**.
 
@@ -214,4 +214,9 @@ GET https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json
 | `85, 86` | Snow Showers / Heavy Snow Showers |
 | `95, 96, 99` | Thunderstorm |
 
+## 8. Let's Connect!
+I would love to hear your feedback or any ideas you have for future weeks.
+
+- Live Demo: [https://aero-weather-phi.vercel.app/]
+- GitHub: davidnguyen16
 
