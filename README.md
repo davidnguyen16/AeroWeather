@@ -31,9 +31,7 @@
 - [Project Structure](#project-structure)
 - [Data Flow](#data-flow)
 - [API Reference](#api-reference)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-
+  
 ---
 
 ## Features
@@ -88,7 +86,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — that's it.
+Open your browser: Head over to http://localhost:3000 to see it in action.
 
 ---
 
